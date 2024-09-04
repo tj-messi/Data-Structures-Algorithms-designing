@@ -13,7 +13,7 @@ void solve()
         cin>>temp;
         ans+=temp;
     }
-    cout<<"��"<<setiosflags(ios::fixed)<<setprecision(2)<<ans/(double)12<<endl;
+    cout<<"¥"<<setiosflags(ios::fixed)<<setprecision(2)<<ans/(double)12<<endl;
 }
  
 int main()
