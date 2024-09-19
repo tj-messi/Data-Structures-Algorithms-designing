@@ -5,106 +5,100 @@
   
 using namespace std;  
   
-// 获取数组k的非零长度  
-int GetLen_k(int k[], int len_all) {  
-    int len_k = 0;  
-    while (len_k < len_all && k[len_all - len_k - 1] == 0) {  
-        ++len_k;  
-    }  
-    return len_all - len_k;  
-}  
-  
-int main() {  
-    int N;  
-    string s_A;  
-    cin >> N >> s_A;  
-  
-    // 确保数组A有足够的空间，并初始化为0  
-    int A[10002] = {0};  
-    int len_A = s_A.size();  
-    for (int h = 0; h < len_A; h++) {  
-        A[h] = s_A[len_A - h - 1] - '0';  
-    }  
-  
-    // 初始化其他数组  
-    int k[10002] = {0};  
-    int sum[10002] = {0};  
-    int middle[10002] = {0};  
-    int carry = 0;  
-  
-    // 对第i项  
-    for (int i = 1; i <= N; i++) {  
-        // 初始化k为1（表示A的i次方）  
-        k[0] = 1;  
-        int len_k = 1;  
-  
-        // 计算A的i次方  
-        for (int u = 1; u < i; u++) {  
-            memset(middle, 0, sizeof(middle));  
-            int new_len_k = 0;  
-            for (int e = 0; e < len_k; e++) {  
-                for (int j = 0; j < len_A; j++) {  
-                    middle[e + j] += k[e] * A[j];  
-                }  
-            }  
-            int len_all = len_A + len_k;  
-            for (int jinwei = 0; jinwei < len_all; jinwei++) {  
-                middle[jinwei + 1] += middle[jinwei] / 10;  
-                middle[jinwei] %= 10;  
-            }  
-            while (len_all > 0 && middle[len_all - 1] == 0) {  
-                len_all--;  
-            }  
-            len_k = len_all;  
-            memcpy(k, middle, sizeof(int) * len_k);  
-        }  
-  
-        // 计算i * A^i  
-        int len_i_shuzu = (i > 999) ? 3 : (i > 99) ? 2 : 1;  
-        int i_shuzu[3] = {0};  
-        i_shuzu[0] = i % 10;  
-        if (len_i_shuzu > 1) {  
-            i_shuzu[1] = (i / 10) % 10;  
-        }  
-        if (len_i_shuzu > 2) {  
-            i_shuzu[2] = i / 100;  
-        }  
-  
-        memset(middle, 0, sizeof(middle));  
-        int new_len_k = 0;  
-        for (int e = 0; e < len_k; e++) {  
-            for (int j = 0; j < len_i_shuzu; j++) {  
-                middle[e + j] += k[e] * i_shuzu[j];  
-            }  
-        }  
-        int len_all = len_k + len_i_shuzu;  
-        for (int jinwei = 0; jinwei < len_all; jinwei++) {  
-            middle[jinwei + 1] += middle[jinwei] / 10;  
-            middle[jinwei] %= 10;  
-        }  
-        while (len_all > 0 && middle[len_all - 1] == 0) {  
-            len_all--;  
-        }  
-        len_k = len_all;  
-  
-        // 累加到sum中  
-        for (int r = 0; r < len_k; r++) {  
-            sum[r] += middle[r] + carry;  
-            carry = sum[r] / 10;  
-            sum[r] %= 10;  
-        }  
-        if (carry > 0) {  
-            sum[len_k] = carry;  
-            len_k++;  
-        }  
-    }  
-  
-    // 输出结果  
-    int len_sum = GetLen_k(sum, len_A);  
-    for (int o = len_sum - 1; o >= 0; o--) {  
-        cout << sum[o];  
-    }  
-    cout << endl;  
-  
-    return 0;  
+int compare(string str1,string str2)
+{
+    if(str1.length()>str2.length()) return 1;
+    else if(str1.length()<str2.length())  return -1;
+    else return str1.compare(str2);
+}
+
+string gjd_add(string str1,string str2)//高精度加法
+{
+    string str;
+    int len1=str1.length();
+    int len2=str2.length();
+    //前面补0，弄成长度相同
+    if(len1<len2)
+    {
+        for(int i=1;i<=len2-len1;i++)
+           str1="0"+str1;
+    }
+    else
+    {
+        for(int i=1;i<=len1-len2;i++)
+           str2="0"+str2;
+    }
+    len1=str1.length();
+    int cf=0;
+    int temp;
+    for(int i=len1-1;i>=0;i--)
+    {
+        temp=str1[i]-'0'+str2[i]-'0'+cf;
+        cf=temp/10;
+        temp%=10;
+        str=char(temp+'0')+str;
+    }
+    if(cf!=0)  str=char(cf+'0')+str;
+    return str;
+}
+
+string gjd_mul(string str1,string str2)
+{
+    string str;
+    int len1=str1.length();
+    int len2=str2.length();
+    string tempstr;
+    for(int i=len2-1;i>=0;i--)
+    {
+        tempstr="";
+        int temp=str2[i]-'0';
+        int t=0;
+        int cf=0;
+        if(temp!=0)
+        {
+            for(int j=1;j<=len2-1-i;j++)
+              tempstr+="0";
+            for(int j=len1-1;j>=0;j--)
+            {
+                t=(temp*(str1[j]-'0')+cf)%10;
+                cf=(temp*(str1[j]-'0')+cf)/10;
+                tempstr=char(t+'0')+tempstr;
+            }
+            if(cf!=0) tempstr=char(cf+'0')+tempstr;
+        }
+        str=gjd_add(str,tempstr);
+    }
+    str.erase(0,str.find_first_not_of('0'));
+    return str;
+}
+
+void solve()
+{
+    string ans="0";
+    int n;
+    string a;
+    cin>>n>>a;
+    for(int i=1;i<=n;i++)
+    {
+        string temp=to_string(i);
+        for(int j=1;j<=i;j++)
+        {
+            temp=gjd_mul(temp,a);
+        }
+        ans=gjd_add(ans,temp);
+        //cout<<ans<<endl;
+    }
+    cout<<ans<<endl;
+}
+
+int main()
+{
+    int t;
+    t=1;
+    //cin>>t;
+    while(t--)
+    {
+        solve();
+    }
+    return 0;
 }
