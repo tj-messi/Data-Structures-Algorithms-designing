@@ -10,7 +10,7 @@ const int N = 250;
 struct card
 {
     string col;//»¨É«
-    char num;//ºÅÂë
+    string num;//ºÅÂë
 };
 card a[N];
 
@@ -28,6 +28,8 @@ void solve()
             top++;
             for(int i=top;i>=2;i--)
             {
+                if(i==1)
+                    break;
                 a[i].col=a[i-1].col;
                 a[i].num=a[i-1].num;
             }
@@ -38,28 +40,62 @@ void solve()
             string dir;
             cin>>dir;
             int temptop=0;
-            int cnt[100];
-            memset(cnt,0,sizeof cnt);
-            for(int i=1;i<=top;i++)
+            int Temp[100];
+            memset(Temp,0,sizeof Temp);
+            for(int i=1;i<=top-temptop;i++)
             {
                 if(a[i].col==dir)
                 {
                     temptop++;
-                    cnt[a[i].num]++;
-                    for(int j=i;j<=top;j++)
+                   if (a[i].num==  "A")  Temp[1]++;
+                     if (a[i].num==  "2")  Temp[2]++;
+                    if (a[i].num==  "3")  Temp[3]++;
+                    if (a[i].num==  "4")  Temp[4] ++;
+                  if (a[i].num==  "5")  Temp[5]++;
+                     if (a[i].num==  "6")  Temp[6] ++;
+                    if (a[i].num==  "7")  Temp[7] ++;
+                  if (a[i].num==  "8")  Temp[8] ++;
+                    if (a[i].num== "9")  Temp[9] ++;
+                    if (a[i].num== "10") Temp[10]++;
+                    if (a[i].num==  "J")  Temp[11] ++;
+                    if (a[i].num== "Q")  Temp[12] ++;
+                    if (a[i].num== "K")  Temp[13] ++;
+                    //cout<<"num"<<a[i].num<<endl;
+                    for(int j=i;j<=top-temptop;j++)
                     {
                         a[j].col=a[j+1].col;
                         a[j].num=a[j+1].num;
                     }
+                    i--;
+                    //cout<<temptop<<endl;
                 }
             }
-            for(int i=1;i<=100;i++)
+            for(int i=13;i>=1;i--)
             {
-                if(cnt[i]==0)continue;
-                while(cnt[i]--)
+                //cout<<Temp[i]<<" ";
+            }
+            //cout<<endl;
+            for(int i=13;i>=1;i--)
+            {
+                if(Temp[i]==0)continue;
+                while(Temp[i]--)
                 {
                     a[top-temptop+1].col=dir;
-                    a[top-temptop+1].num=char(i);
+                    
+            if (i == 1)  a[top-temptop+1].num = "A";
+            if (i == 2)  a[top-temptop+1].num = "2";
+            if (i == 3)  a[top-temptop+1].num = "3";
+            if (i == 4)  a[top-temptop+1].num = "4";
+            if (i == 5)  a[top-temptop+1].num = "5";
+            if (i == 6)  a[top-temptop+1].num = "6";
+            if (i == 7)  a[top-temptop+1].num= "7";
+            if (i == 8)  a[top-temptop+1].num = "8";
+            if (i == 9)  a[top-temptop+1].num= "9";
+            if (i == 10) a[top-temptop+1].num = "10";
+            if (i == 11) a[top-temptop+1].num = "J";
+            if (i == 12) a[top-temptop+1].num= "Q";
+            if (i == 13) a[top-temptop+1].num = "K";
+
                     temptop--;
                 }
             }
@@ -84,6 +120,8 @@ void solve()
             }
         }
     }
+    if(top==0)
+        return;
     for(int i=top;i>=1;i--)
     {
         cout<<a[i].col<<" "<<a[i].num<<endl;
