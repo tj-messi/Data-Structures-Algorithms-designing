@@ -1,44 +1,17 @@
 #include <iostream>  
-#include <vector>  
-#include <string>  
-#include <algorithm>  
+#include <cstdio>  
+#include <iomanip>  
+#include <cstring>  
   
 using namespace std;  
   
-// 计算大数的有效长度  
-int GetLen(const vector<int>& nums) {  
-    int len = nums.size();  
-    while (len > 0 && nums[len - 1] == 0) len--;  
-    return len;  
-}  
-  
-// 大数乘法  
-vector<int> multiply(const vector<int>& nums1, int num2) {  
-    vector<int> result(nums1.size() + 1, 0);  
-    int carry = 0;  
-    for (int i = 0; i < nums1.size(); i++) {  
-        int product = nums1[i] * num2 + carry;  
-        result[i] = product % 10;  
-        carry = product / 10;  
+// 获取数组k的非零长度  
+int GetLen_k(int k[], int len_all) {  
+    int len_k = 0;  
+    while (len_k < len_all && k[len_all - len_k - 1] == 0) {  
+        ++len_k;  
     }  
-    if (carry > 0) result.back() = carry;  
-    return result;  
-}  
-  
-// 大数加法  
-vector<int> add(const vector<int>& nums1, const vector<int>& nums2) {  
-    int len1 = GetLen(nums1), len2 = GetLen(nums2);  
-    vector<int> result(max(len1, len2) + 1, 0);  
-    int carry = 0;  
-    for (int i = 0; i < result.size(); i++) {  
-        int sum = carry;  
-        if (i < len1) sum += nums1[len1 - i - 1];  
-        if (i < len2) sum += nums2[len2 - i - 1];  
-        result[result.size() - i - 1] = sum % 10;  
-        carry = sum / 10;  
-    }  
-    if (carry > 0) result.insert(result.begin(), carry);  
-    return result;  
+    return len_all - len_k;  
 }  
   
 int main() {  
@@ -46,39 +19,90 @@ int main() {
     string s_A;  
     cin >> N >> s_A;  
   
-    vector<int> A(s_A.size());  
-    for (int i = 0; i < s_A.size(); i++) {  
-        A[i] = s_A[s_A.size() - i - 1] - '0';  
+    // 确保数组A有足够的空间，并初始化为0  
+    int A[10002] = {0};  
+    int len_A = s_A.size();  
+    for (int h = 0; h < len_A; h++) {  
+        A[h] = s_A[len_A - h - 1] - '0';  
     }  
   
-    vector<int> sum(10002, 0);  
-    vector<int> k = {1};  // k 初始化为 1  
+    // 初始化其他数组  
+    int k[10002] = {0};  
+    int sum[10002] = {0};  
+    int middle[10002] = {0};  
+    int carry = 0;  
   
+    // 对第i项  
     for (int i = 1; i <= N; i++) {  
-        // 计算 A^i  
-        vector<int> A_i = A;  
-        for (int j = 1; j < i; j++) {  
-            A_i = multiply(A_i, 10);  
-            for (int m = 0; m < A.size(); m++) {  
-                A_i[m] += A[m];  
-                if (A_i[m] >= 10) {  
-                    A_i[m + 1]++;  
-                    A_i[m] %= 10;  
+        // 初始化k为1（表示A的i次方）  
+        k[0] = 1;  
+        int len_k = 1;  
+  
+        // 计算A的i次方  
+        for (int u = 1; u < i; u++) {  
+            memset(middle, 0, sizeof(middle));  
+            int new_len_k = 0;  
+            for (int e = 0; e < len_k; e++) {  
+                for (int j = 0; j < len_A; j++) {  
+                    middle[e + j] += k[e] * A[j];  
                 }  
             }  
-            while (A_i.size() > 1 && A_i.back() == 0) A_i.pop_back();  
+            int len_all = len_A + len_k;  
+            for (int jinwei = 0; jinwei < len_all; jinwei++) {  
+                middle[jinwei + 1] += middle[jinwei] / 10;  
+                middle[jinwei] %= 10;  
+            }  
+            while (len_all > 0 && middle[len_all - 1] == 0) {  
+                len_all--;  
+            }  
+            len_k = len_all;  
+            memcpy(k, middle, sizeof(int) * len_k);  
         }  
   
-        // 计算 i * A^i  
-        vector<int> i_A_i = multiply(A_i, i);  
+        // 计算i * A^i  
+        int len_i_shuzu = (i > 999) ? 3 : (i > 99) ? 2 : 1;  
+        int i_shuzu[3] = {0};  
+        i_shuzu[0] = i % 10;  
+        if (len_i_shuzu > 1) {  
+            i_shuzu[1] = (i / 10) % 10;  
+        }  
+        if (len_i_shuzu > 2) {  
+            i_shuzu[2] = i / 100;  
+        }  
   
-        // 累加到 sum  
-        sum = add(sum, i_A_i);  
+        memset(middle, 0, sizeof(middle));  
+        int new_len_k = 0;  
+        for (int e = 0; e < len_k; e++) {  
+            for (int j = 0; j < len_i_shuzu; j++) {  
+                middle[e + j] += k[e] * i_shuzu[j];  
+            }  
+        }  
+        int len_all = len_k + len_i_shuzu;  
+        for (int jinwei = 0; jinwei < len_all; jinwei++) {  
+            middle[jinwei + 1] += middle[jinwei] / 10;  
+            middle[jinwei] %= 10;  
+        }  
+        while (len_all > 0 && middle[len_all - 1] == 0) {  
+            len_all--;  
+        }  
+        len_k = len_all;  
+  
+        // 累加到sum中  
+        for (int r = 0; r < len_k; r++) {  
+            sum[r] += middle[r] + carry;  
+            carry = sum[r] / 10;  
+            sum[r] %= 10;  
+        }  
+        if (carry > 0) {  
+            sum[len_k] = carry;  
+            len_k++;  
+        }  
     }  
   
-    int len_sum = GetLen(sum);  
-    for (int i = len_sum - 1; i >= 0; i--) {  
-        cout << sum[i];  
+    // 输出结果  
+    int len_sum = GetLen_k(sum, len_A);  
+    for (int o = len_sum - 1; o >= 0; o--) {  
+        cout << sum[o];  
     }  
     cout << endl;  
   

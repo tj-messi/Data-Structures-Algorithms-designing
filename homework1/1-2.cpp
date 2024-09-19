@@ -3,7 +3,7 @@
 using namespace std;
 #define MAX_DEF 3010
 #define DOU_MAX 3025
-#define max 3000
+#define max 1000
 void Add(int a1[],int a2[],int b[]) {
 	for(int i=0; i<1001; i++)
 		b[i]=a1[i]+a2[i];
