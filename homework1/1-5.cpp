@@ -3,30 +3,29 @@
 #include <string>  
 #include <cstdio>  
 #include <limits>  
-#define MAX_LIST_LENGTH 1000000 // Maximum size of the list  
-#define INITIAL_LIST_SIZE 1000  // Initial size of the list  
-#define LIST_INCREMENT 100      // Increment size for the list  
+#define MAX_LIST_LENGTH 1000000 
+#define INITIAL_LIST_SIZE 1000  
+#define LIST_INCREMENT 100       
 #define ElemType int  
-#define SAFE_CIN(x) cin >> x    // Macro for safer cin usage (not actually needed here but can be useful)  
+#define SAFE_CIN(x) cin >> x    
   
 using namespace std;  
   
-// Student information structure  
+ 
 struct Pupil {  
     int serialNum;  
     string identifier;  
     string fullName;  
 };  
-  
-// Define the structure of the sequential list  
+   
 struct SequentialList {  
-    ElemType* elements;         // Pointer to the base address of the current list  
-    int currentLength;          // Current length of the list  
-    int allocatedSize;          // Allocated size of the list  
-    Pupil students[100001];     // Array to store student information (note: this might be unnecessary if elements is used)  
+    ElemType* elements;          
+    int currentLength;         
+    int allocatedSize;           
+    Pupil students[100001];     
 };  
   
-// Initialize the sequential list  
+  
 bool InitializeList(SequentialList& list) {  
     list.elements = (int*)malloc(INITIAL_LIST_SIZE * sizeof(int));  
     list.currentLength = 0;  
@@ -34,7 +33,7 @@ bool InitializeList(SequentialList& list) {
     return true;  
 }  
   
-// Input content into the sequential list  
+ 
 void InputToList(SequentialList& list, int numStudents) {  
     for (int i = 1; i <= numStudents; ++i) {  
         list.currentLength++;  
@@ -43,8 +42,7 @@ void InputToList(SequentialList& list, int numStudents) {
         SAFE_CIN(list.students[i].fullName);  
     }  
 }  
-  
-// Insert an element into the sequential list at position i  
+   
 void InsertToList(SequentialList& list, int position) {  
     if (position < 1 || position > list.currentLength + 1) {  
         cout << "-1" << endl;  
@@ -65,15 +63,14 @@ void InsertToList(SequentialList& list, int position) {
         SAFE_CIN(list.students[position].fullName);  
           
         cout << "0" << endl;  
-          
-        // Update serial numbers  
+            
         for (int i = 1; i <= list.currentLength; ++i) {  
             list.students[i].serialNum = i;  
         }  
     }  
 }  
   
-// Delete an element from the sequential list at position i  
+
 void DeleteFromList(SequentialList& list, int position) {  
     if (position < 1 || position > list.currentLength) {  
         cout << "-1" << endl;  
@@ -92,7 +89,7 @@ void DeleteFromList(SequentialList& list, int position) {
     }  
 }  
   
-// Query student by ID  
+
 void QueryByID(SequentialList& list, string query) {  
     bool found = false;  
     for (int i = 1; i <= list.currentLength; i++) {  

@@ -28,13 +28,13 @@ void Mul(int a1[],int a2[],int b[]) {
 }
 void solve()
 {
-int a,i,b,j,n1,n2;
+	int a,i,b,j,n1,n2;
 	int ar2[MAX_DEF]= {0};
 	int ar1[MAX_DEF]= {0};
 	int ADDar[MAX_DEF] = {0};
 	int MULar[DOU_MAX]= {0};
- scanf("%d", &n1);
-for(i = 0; i < n1; ++i)
+ 	scanf("%d", &n1);
+	for(i = 0; i < n1; ++i)
     {
         scanf("%d%d", &a, &b);
         ar1[b] = a;
