@@ -82,7 +82,7 @@ void DeleteFromList(SequentialList& list, int position) {
         list.currentLength--;  
         cout << "0" << endl;  
           
-        // Update serial numbers  
+        
         for (int i = 1; i <= list.currentLength; ++i) {  
             list.students[i].serialNum = i;  
         }  
@@ -104,7 +104,7 @@ void QueryByID(SequentialList& list, string query) {
     }  
 }  
   
-// Query student by name  
+
 void QueryByName(SequentialList& list, string query) {  
     bool found = false;  
     for (int i = 1; i <= list.currentLength; i++) {  

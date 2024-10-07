@@ -46,7 +46,7 @@ void solve()
         ar2[b] = a;
     }
 
- for(i = 0; i <= max; ++i)
+ 	for(i = 0; i <= max; ++i)
     {
         for(j = 0; j <= max; ++j)
         {
