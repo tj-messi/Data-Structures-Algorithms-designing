@@ -10,7 +10,7 @@
 #define MAX_LENGTH 100         
 using namespace std;
 
-int dp[40000];  
+int dp[100005];  
   
 int longestValidParentheses(string s, int &start) {  
       
@@ -50,7 +50,7 @@ void solve()
     ans = longestValidParentheses(s, start);  
   
     // Êä³ö½á¹û  
-    cout << ans << " " << start-1 << endl;  
+    cout << ans << " " << start << endl;  
 }
  
 int main()
