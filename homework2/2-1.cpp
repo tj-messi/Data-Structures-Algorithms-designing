@@ -1,10 +1,10 @@
 #include<iostream>
 #include<iomanip>
 #include<cstdlib> // for malloc and realloc  
-#define STACK_INIT_SIZE 200    // 存储空间初始分配量  
-#define STACKINCREMENT 10      // 存储空间分配增量   
+#define STACK_INIT_SIZE 200    
+#define STACKINCREMENT 10     
 #define OVERFLOW -1  
-#define MAX_LENGTH 100         // 假设最大列车个数为100  
+#define MAX_LENGTH 100         
 using namespace std;
 
 
@@ -46,7 +46,7 @@ int Push(SqStack& S, SElemtype e) {
 }  
   
 char Pop(SqStack& S) {  
-    if (S.top == S.base) return '\0'; // 使用'\0'表示栈空，因为'0'可能是一个有效的栈元素  
+    if (S.top == S.base) return '\0'; 
     return *(--S.top);  
 }  
   
@@ -73,41 +73,38 @@ void solve()
      SqStack stack1;  
     InitStack(&stack1);  
       
-    char b[MAX_LENGTH]; // 进站序列  
-    char a[MAX_LENGTH * MAX_LENGTH]; // 存储所有待验证的出站序列  
-    int n = 0; // 当前读取的字符数  
+    char b[MAX_LENGTH]; 
+    char a[MAX_LENGTH * MAX_LENGTH]; 
+    int n = 0;   
     char input;  
-    int count = 0; // 待验证出栈序列的个数  
-    int length = 0; // 列车个数  
+    int count = 0;
+    int length = 0; 
       
-    // 读取进站序列  
+    
     while ((input = getchar()) != '\n') {  
         b[length++] = input;  
     }  
       
-    // 读取待验证的出站序列  
-    char c[MAX_LENGTH]; // 单个待验证序列  
-    int seq_index = 0; // 当前序列的索引  
+
+    char c[MAX_LENGTH]; 
+    int seq_index = 0;   
     while ((input = getchar()) != EOF) {  
         if (input != '\n') {  
             a[n++] = input;  
         } else {  
-            count++;  
-            // 如果遇到换行符，将当前序列存储到c中，并重置索引  
+            count++;    
             for (int i = 0; i < length; i++) {  
                 c[i] = a[seq_index * length + i];  
             }  
-            // 调用Judge函数判断当前序列  
             if (Judge(stack1, length, c, b)) {  
                 cout << "yes" << endl;  
             } else {  
                 cout << "no" << endl;  
             }  
-            seq_index++; // 移动到下一个序列  
+            seq_index++;
         }  
     }  
-      
-    // 处理最后一个序列（如果没有换行符结束）  
+       
     if (seq_index * length < n) {  
         for (int i = 0; i < length; i++) {  
             c[i] = a[seq_index * length + i];  
