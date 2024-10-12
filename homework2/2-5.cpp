@@ -1,148 +1,130 @@
-#include<iostream>
-#include<iomanip>
-#include<cstdlib> // for malloc and realloc  
-#define STACK_INIT_SIZE 200    
-#define STACKINCREMENT 10     
-#define OVERFLOW -1  
-#define MAX_LENGTH 100         
+#include <iostream>
+#include<cstdlib>
 using namespace std;
- 
-struct Node {  
-    long long data;  
-};  
-  
- 
-struct CustomQueue {  
-    Node* elements;  // 动态分配存储空间  
-    int head;        // 头指针  
-    int tail;        // 尾指针  
-    int capacity;    // 队列容量  
-};  
-  
-
-bool InitializeQueue(CustomQueue& queue, int capacity) {  
-    queue.elements = (Node*)malloc(capacity * sizeof(Node));  
-    if (queue.elements == nullptr) return false;  
-    queue.head = queue.tail = 0;  
-    queue.capacity = capacity;  
-    return true;  
-}  
-   
-bool IsEmpty(const CustomQueue& queue) {  
-    return queue.head == queue.tail;  
-}  
-  
- 
-bool IsFull(const CustomQueue& queue) {  
-    return (queue.tail + 1) % queue.capacity == queue.head;  
-}  
-  
-  
-void PrintQueue(const CustomQueue& queue) {  
-    int index = queue.head;  
-    while (index != queue.tail) {  
-        cout << queue.elements[index].data << " ";  
-        index = (index + 1) % queue.capacity;  
-    }  
-    cout << endl;  
-}  
-  
-  
-bool Enqueue(CustomQueue& normalQueue, CustomQueue& maxQueue, long long value) {  
-    if (IsFull(normalQueue)) {  
-        cout << "Queue is Full" << endl;  
-        return false;  
-    }   
-    normalQueue.elements[normalQueue.tail].data = value;  
-    normalQueue.tail = (normalQueue.tail + 1) % normalQueue.capacity;  
-  
-    maxQueue.elements[maxQueue.tail].data = value;  
-    maxQueue.tail = (maxQueue.tail + 1) % maxQueue.capacity;  
-  
-    return true;  
-}  
-  
-bool DequeueFront(CustomQueue& normalQueue, CustomQueue& maxQueue, long long& value) {  
-    if (IsEmpty(normalQueue)) {  
-        cout << "Queue is Empty" << endl;  
-        return false;  
-    }  
-    value = normalQueue.elements[normalQueue.head].data;  
-    normalQueue.head = (normalQueue.head + 1) % normalQueue.capacity;  
-   
-    if (!IsEmpty(maxQueue) && maxQueue.elements[maxQueue.head].data == value) {  
-        maxQueue.head = (maxQueue.head + 1) % maxQueue.capacity;  
-    }  
-    return true;  
-}  
-  
-  
-bool DequeueRear(CustomQueue& queue, long long& value) {  
-    if (IsEmpty(queue)) {  
-        return false;  
-    }   
-    queue.tail = (queue.tail - 1 + queue.capacity) % queue.capacity;  
-    value = queue.elements[queue.tail].data;  
-    return true;  
-}  
-  
- 
-void MaintainQueues(CustomQueue& maxQueue, CustomQueue& normalQueue, long long value) {  
-    long long removedValue;  
-      
-    while (!IsEmpty(maxQueue) && maxQueue.elements[(maxQueue.tail - 1 + maxQueue.capacity) % maxQueue.capacity].data < value) {  
-        DequeueRear(maxQueue, removedValue);  
-    }  
-    Enqueue(normalQueue, maxQueue, value);  
-}  
-  
-// 获取最大值  
-void GetMax(const CustomQueue& maxQueue) {  
-    if (IsEmpty(maxQueue)) {  
-        cout << "Queue is Empty" << endl;  
-    } else {  
-        cout << maxQueue.elements[maxQueue.head].data << endl;  
-    }  
-} 
-
-void solve()
-{
-    CustomQueue normalQueue, maxQueue;  
-    int capacity;  
-    long long value;  
-  
-    cin >> capacity;  
-    ++capacity;  
-  
-    if (!InitializeQueue(normalQueue, capacity) || !InitializeQueue(maxQueue, capacity)) {  
-        cout << "Failed to initialize queues." << endl;  
-        return;  
-    }  
-  
-    string command;  
-    while (cin >> command && command != "quit") {  
-        if (command == "dequeue") {  
-            DequeueFront(normalQueue, maxQueue, value);  
-        } else if (command == "enqueue") {  
-            cin >> value;  
-            MaintainQueues(maxQueue, normalQueue, value);  
-        } else if (command == "max") {  
-            GetMax(maxQueue);  
-        }  
-    }  
-  
-    PrintQueue(normalQueue);  
-    return;  
+struct ElemBox {//每个节点的元素域保存的是坐标值和父节点的索引
+    long long value;
+};
+typedef ElemBox elem;
+struct quene {
+    elem* base;//初始化的动态分配存储空间
+    int front;//头指针
+    int rear;//尾指针
+};
+bool InitQuene(quene& Q,int n) {//初始化生成队列
+    Q.base = (elem*)malloc(n * sizeof(elem));
+    Q.front = Q.rear = 0;
+    return 1;
 }
  
-int main()
-{
-    int t;
-    t=1;
-    //cin>>t;
-    while(t--)
-    {
-        solve();
+bool Is_Empty(quene Q) {//是空返回1，不是空返回0
+    if (Q.front == Q.rear) {
+        return 1;
     }
+    else {
+        return 0;
+    }
+}
+bool Is_Full(quene Q,int n) {//是空返回1，不是空返回0
+    if (Q.front == (Q.rear+1)%n) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+void Print_Quene(quene Q, int n) {
+    while (((Q.front) % n) != Q.rear) {
+        cout << Q.base[Q.front].value << " ";
+        Q.front = (Q.front + 1) % n;
+    }
+}
+bool EnQuene(quene& Q,quene &P, long long e,int n,int order) {//order为1代表加入单减序列，为0代表加入正常存储序列
+    if (Is_Full(P, n) == 1) {
+        if(order==0){//对正常列而言
+            cout << "Queue is Full"<<endl;
+        }
+        return 0;
+    }else{
+        Q.base[Q.rear].value = e;
+        Q.rear = (Q.rear+1)%n;
+        P.base[P.rear].value = e;
+        P.rear = (P.rear + 1) % n;
+        
+        return 1;
+    }
+}
+bool DeQueneFront(quene& Q, quene &P,long long &e,int n,int order) {//Q为正常序列，P为最大值单减序列
+    static int empty=0;
+    if (Is_Empty(Q) == 1) {
+        if(order==0){      //对正常列而言
+            cout << "Queue is Empty"<<endl;
+        }
+        return 0;
+    }else{
+        
+        e = Q.base[Q.front].value;
+        Q.front=(Q.front+1)%n;
+        if (e == P.base[P.front].value) {    //出的数恰好是最大值时，记得要把最大值也出列
+            P.front = (P.front + 1) % n;
+        }
+        cout << e << endl;
+        return 1;
+    }
+}
+bool DeQueneRear(quene& Q, long long& e,int n) {      //单减队列需要删除尾部操作
+    if (Is_Empty(Q) == 1) {
+        return 0;
+    }
+    else {
+        e = Q.base[(Q.rear-1)%n].value;
+        Q.rear = (Q.rear- 1 )%n;
+        return 1;
+    }
+}
+void Creat_Quene(quene &Q,quene &P,long long value,int n) {  //Q为最大值单减列，P为正常存储列
+    long long e;
+    if (Is_Full(P, n) != 1) {
+        while (Q.base[(Q.rear - 1) % n].value < value) {//可以进列只有两种情况，要么小于等于前，要么列已经空了（自己就是最大值）
+            DeQueneRear(Q, e, n);
+            if (Q.rear == Q.front) {
+                break;
+            }
+        }
+    }
+    EnQuene(Q,P, value,n,0);
+}
+void Get_Max(quene Q,quene P,int n) {
+    if (Is_Empty(P) == 1) {
+        cout << "Queue is Empty"<<endl;
+    }else{
+        cout << Q.base[Q.front].value << endl;
+    }
+}
+int main() {
+    quene Q;  //存储正常顺序的队列
+    quene Q_Max;    //从大到小存储的最大值队列    
+    long long n;
+    long long e;
+    cin >> n;
+    ++n;
+    InitQuene(Q,n);
+    InitQuene(Q_Max,n);
+    string command = " ";
+    while (command != "quit") {
+        cin >> command;
+        if (command == "dequeue") {
+            DeQueneFront(Q,Q_Max,e,n,0);
+            
+        }
+        if (command == "enqueue") {
+            cin >> e;
+            Creat_Quene(Q_Max, Q, e, n);
+        }
+        if (command == "max") {
+            Get_Max(Q_Max,Q,n);
+        }
+    }
+    Print_Quene(Q,n);
+    cout << endl;
     return 0;
 }
