@@ -57,7 +57,8 @@ SElemtype GetTop(SqStack S) {
   
 int Judge(SqStack &S, int length, char c[], char b[]) {  
     int n = 0;  
-    ClearStack(&S);  
+    
+      
     for (int r = 0; r < length; r++) {  
         Push(S, b[r]);  
         while (GetTop(S) == c[n]) {  
