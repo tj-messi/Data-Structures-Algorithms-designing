@@ -58,6 +58,8 @@ int kruskal(int n, vector<Edge>& edges, UnionFind& uf) {
             totalWeight += edge.weight;
             edgeCount++;
 
+            
+
             // 当边数达到 (顶点数 - 1) 时生成树完成
             if (edgeCount == n - 1) {
                 break;
