@@ -6,6 +6,7 @@
         "utility": "cpp",
         "algorithm": "cpp",
         "xmemory": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "iostream": "cpp"
     }
 }
